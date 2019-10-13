@@ -41,6 +41,10 @@ body {
     background-color: #6e5;
 }
 
+.bg-blue {
+    background-color: #46e;
+}
+
 .bg-yellow {
     background-color: #fe2;
 }
@@ -50,7 +54,12 @@ body {
 }
 
 .bg-red {
-    background-color: #f55;
+    background-color: #e22;
+}
+
+.bg-brown {
+    background-color: #854;
+    color: white;
 }
 
 .bg-black {
