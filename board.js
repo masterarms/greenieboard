@@ -4,7 +4,7 @@
 function passesToAverage(passes) {
     // TODO: Only count valid passes/traps???
     return (1.0 / passes.length) * passes.reduce(function(sum, pass) {
-        return sum + (typeof pass.pointsFinal === "number" ? pass.pointsFinal : 0.0);
+        return sum + (typeof pass.pointsPass === "number" ? pass.pointsPass : 0.0);
     }, 0.0);
 }
 
@@ -51,7 +51,7 @@ function passToTrapCharacter(pass) {
 }
 
 function passToScoreCell(pass) {
-    return `<td class="score_cell ${pointsToBgClass(pass.pointsFinal)} case${(pass.case)}" title="Score: ${pass.pointsPass} | Grade: ${pass.grade} | Details: ${pass.details}">${passToTrapCharacter(pass)}</td>`
+    return `<td class="score_cell ${pointsToBgClass(pass.pointsPass)} case${(pass.case)}" title="Score: ${pass.pointsPass} | Grade: ${pass.grade} | Details: ${pass.details}">${passToTrapCharacter(pass)}</td>`
 }
 
 function pilotToTableLine(pilot, rank) {
