@@ -14,20 +14,21 @@ function passesToPilotsObject(dataset) {
     const iPointsPass = dataset.fields.indexOf("Points Pass");
     const iPointsFinal = dataset.fields.indexOf("Points Final");
     const iWire = dataset.fields.indexOf("Wire");
+    const iDetails = dataset.fields.indexOf("Details");
     const pilots = {}
     dataset.records.forEach(function(record) {
         const pilotName = record[iPilot];
         if(!pilots[pilotName]) {
             pilots[pilotName] = { name: pilotName, passes: [], avg: 0.0 };
         }
-        pilots[pilotName].passes.push({ pointsPass: record[iPointsPass], pointsFinal: record[iPointsFinal], wire: record[iWire], grade: record[iGrade] });
+        pilots[pilotName].passes.push({ pointsPass: record[iPointsPass], pointsFinal: record[iPointsFinal], wire: record[iWire], grade: record[iGrade], details: record[iDetails] });
         // TODO: pilots[pilotName].aircraft[]
         pilots[pilotName].avg = passesToAverage(pilots[pilotName].passes);
     });
     return pilots;
 }
 
-function gradeToBgClass(points) {
+function pointsToBgClass(points) {
     if(typeof points !== "number" || points <= 0.0) { return "bg-black"; }
     if(points <= 1.0) { return "bg-red"; }
     if(points <= 2.0) { return "bg-orange"; }
@@ -35,8 +36,14 @@ function gradeToBgClass(points) {
     return "bg-green";
 }
 
+function passToTrapCharacter(pass) {
+    if(typeof pass.wire === "number") { return pass.wire; }
+    if(pass.grade.includes("BOLTER")) { return "B"; }
+    return "";
+}
+
 function passToScoreCell(pass) {
-    return `<td class="score_cell ${gradeToBgClass(pass.pointsFinal)}" title="Score: ${pass.pointsPass} Grade: ${pass.grade}">${typeof pass.wire === "number" ? pass.wire : ""}</td>`
+    return `<td class="score_cell ${pointsToBgClass(pass.pointsFinal)}" title="Score: ${pass.pointsPass} | Grade: ${pass.grade} | Details: ${pass.details}">${passToTrapCharacter(pass)}</td>`
 }
 
 function pilotToTableLine(pilot, rank) {
@@ -61,7 +68,7 @@ window.boardFunctions = {
 
         const pilotList = Object.keys(pilots).map(function(key) { return pilots[key] });
         console.log("Pilotlist", pilotList);
-        const sortedPilotList = pilotList.sort(function(a, b) { return a.avg - b.avg; });
+        const sortedPilotList = pilotList.sort(function(a, b) { return b.avg - a.avg; });
 
         innerHTML = "";
         sortedPilotList.forEach(function (pilot, index) {
