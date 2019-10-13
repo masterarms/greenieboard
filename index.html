@@ -3,9 +3,34 @@
 
 <h1>Master Arms Greenie Board</h1>
 
-<section id="board_container"></section>
+<section id="board_container">
 
+    <table>
+        <thead>
+            <tr>
+                <th width=80>Rank</th>
+                <th width=300>Pilot</th>
+                <th width=80>Avg</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        </tbody>
+    </table>
+
+</section>
+
+<script src="csv.js"></script>
 <script src="board.js"></script>
 <script>
-    document.getElementById("board_container").innerHTML = "<p>Test</p>";
+    response = fetch("./example.csv", { method: "GET" });
+    response.then(function(body) {
+        return body.text();
+    }).then(function(text) {
+        return CSV.fetch({ data: text });
+    }).then(function (dataset) {
+        window.boardFunctions.fill(dataset, document.querySelector("#board_container tbody"));
+    });
 </script>

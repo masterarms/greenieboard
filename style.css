@@ -1,5 +1,45 @@
 
+body {
+    text-transform: uppercase;
+    color: #222;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 #board_container {
-    background: green;
+}
+
+#board_container tbody tr {
+    height: 32px;
+    font-size: 18px;
+}
+#board_container thead tr {
+    text-align: left;
+}
+
+.score_cell {
+    width: 32px;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 12px;
+}
+
+.bg-green {
+    background-color: #6e5;
+}
+
+.bg-yellow {
+    background-color: #fe2;
+}
+
+.bg-orange {
+    background-color: #fa6;
+}
+
+.bg-red {
+    background-color: #f55;
+}
+
+.bg-black {
+    background-color: #444;
+    color: white;
 }
