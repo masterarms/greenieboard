@@ -21,6 +21,20 @@ body {
     text-align: center;
     vertical-align: middle;
     border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.case1 {
+    border: none;
+}
+
+.case2 {
+    border: 3px dashed black;
+}
+
+.case3 {
+    border: 3px solid black;
 }
 
 .bg-green {

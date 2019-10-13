@@ -15,16 +15,24 @@ function passesToPilotsObject(dataset) {
     const iPointsFinal = dataset.fields.indexOf("Points Final");
     const iWire = dataset.fields.indexOf("Wire");
     const iDetails = dataset.fields.indexOf("Details");
+    const iAirframe = dataset.fields.indexOf("Airframe");
+    const iCase = dataset.fields.indexOf("Case");
     const pilots = {}
     dataset.records.forEach(function(record) {
         const pilotName = record[iPilot];
         if(!pilots[pilotName]) {
             pilots[pilotName] = { name: pilotName, passes: [], avg: 0.0 };
         }
-        pilots[pilotName].passes.push({ pointsPass: record[iPointsPass], pointsFinal: record[iPointsFinal], wire: record[iWire], grade: record[iGrade], details: record[iDetails] });
-        // TODO: pilots[pilotName].aircraft[]
-        pilots[pilotName].avg = passesToAverage(pilots[pilotName].passes);
+        pilots[pilotName].passes.push({ pointsPass: record[iPointsPass], pointsFinal: record[iPointsFinal], wire: record[iWire], grade: record[iGrade], details: record[iDetails], airframe: record[iAirframe], case: record[iCase] });
+        console.log("Airframe", record[iAirframe]);
     });
+
+    Object.keys(pilots).forEach(function(pilotName) {
+        const pilot = pilots[pilotName]
+        pilot.airframes = pilot.passes.map((p) => p.airframe).filter((val, i, a) => a.indexOf(val) === i);
+        pilot.avg = passesToAverage(pilots[pilotName].passes);
+    });
+
     return pilots;
 }
 
@@ -43,7 +51,7 @@ function passToTrapCharacter(pass) {
 }
 
 function passToScoreCell(pass) {
-    return `<td class="score_cell ${pointsToBgClass(pass.pointsFinal)}" title="Score: ${pass.pointsPass} | Grade: ${pass.grade} | Details: ${pass.details}">${passToTrapCharacter(pass)}</td>`
+    return `<td class="score_cell ${pointsToBgClass(pass.pointsFinal)} case${(pass.case)}" title="Score: ${pass.pointsPass} | Grade: ${pass.grade} | Details: ${pass.details}">${passToTrapCharacter(pass)}</td>`
 }
 
 function pilotToTableLine(pilot, rank) {
@@ -51,6 +59,7 @@ function pilotToTableLine(pilot, rank) {
 <tr>
     <td>${rank + 1}</td>
     <td>${pilot.name}</td>
+    <td>${pilot.airframes}</td>
     <td>${pilot.avg.toFixed(2)}</td>
     ${pilot.passes.map(passToScoreCell).join("\n")}
 </tr>
@@ -61,13 +70,8 @@ function pilotToTableLine(pilot, rank) {
 window.boardFunctions = {
 
     fill: function(dataset, targetTbody) {
-        console.log("Filling...", dataset);
-
         const pilots = passesToPilotsObject(dataset);
-        console.log("Pilots", pilots);
-
         const pilotList = Object.keys(pilots).map(function(key) { return pilots[key] });
-        console.log("Pilotlist", pilotList);
         const sortedPilotList = pilotList.sort(function(a, b) { return b.avg - a.avg; });
 
         innerHTML = "";
