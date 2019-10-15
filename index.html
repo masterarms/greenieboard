@@ -3,8 +3,15 @@
 
 <h1>Master Arms Greenie Board</h1>
 
-<section id="board_container">
+<form>
+    <label>
+        Use local file...<br>
+        <input type="file" id="input" onchange="useLocalFile(this.files)">
+    </label>
+</form>
+<br><br>
 
+<section id="board_container">
     <table>
         <thead>
             <tr>
@@ -27,12 +34,31 @@
 <script src="csv.js"></script>
 <script src="board.js"></script>
 <script>
+
+    function useTextContents(text) {
+        return CSV.fetch({ data: text }).then(function (dataset) {
+            window.boardFunctions.fill(dataset, document.querySelector("#board_container tbody"))
+        });
+    }
+
+    function useLocalFile(files) {
+        if(files.length) {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+                const text = event.target.result;
+                console.log("New text", text);
+                useTextContents(text);
+            }
+            reader.onerror = error => reject(error)
+            reader.readAsText(files[0]) // you could also read images and other binaries
+        }
+    }
+
+
     response = fetch("./example.csv", { method: "GET" });
     response.then(function(body) {
         return body.text();
     }).then(function(text) {
-        return CSV.fetch({ data: text });
-    }).then(function (dataset) {
-        window.boardFunctions.fill(dataset, document.querySelector("#board_container tbody"));
+        useTextContents(text);
     });
 </script>
