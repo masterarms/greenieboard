@@ -9,6 +9,8 @@
         <input type="file" id="input" onchange="useLocalFile(this.files)">
     </label>
 </form>
+<br>
+<button onclick="pointAtCsvServer()">Point at other server...</button>
 <br><br>
 
 <section id="board_container">
@@ -47,6 +49,7 @@
             reader.onload = (event) => {
                 const text = event.target.result;
                 console.log("New text", text);
+                document.location.hash = "";
                 useTextContents(text);
             }
             reader.onerror = error => reject(error)
@@ -54,11 +57,26 @@
         }
     }
 
+    function loadHttpFile(url) {
+        const response = fetch(url, { method: "GET" });
+        response.then(function(body) {
+            return body.text();
+        }).then(function(text) {
+            useTextContents(text);
+        });
+    }
 
-    response = fetch("./example.csv", { method: "GET" });
-    response.then(function(body) {
-        return body.text();
-    }).then(function(text) {
-        useTextContents(text);
-    });
+    function pointAtCsvServer() {
+        const newUrl = prompt("Enter full URL to CSV file");
+        console.log("url is ", newUrl);
+        document.location.hash = `#${encodeURI(newUrl)}`;
+        loadHttpFile(newUrl);
+    }
+
+    let csvUrl = "./example.csv";
+    if(document.location.hash.length > 1) {
+        csvUrl = decodeURI(document.location.hash.replace("#", ""));
+    }
+
+    loadHttpFile(csvUrl);
 </script>
