@@ -69,8 +69,10 @@
     function pointAtCsvServer() {
         const newUrl = prompt("Enter full URL to CSV file");
         console.log("url is ", newUrl);
-        document.location.hash = `#${encodeURI(newUrl)}`;
-        loadHttpFile(newUrl);
+        if(newUrl && newUrl.length > 0) {
+            document.location.hash = `#${encodeURI(newUrl)}`;
+            loadHttpFile(newUrl);
+        }
     }
 
     let csvUrl = "./example.csv";
